@@ -24,23 +24,19 @@ import java.io.File;
 import static android.os.Build.VERSION.SDK_INT;
 
 /**
- * {@link CertificateSource} based on the system trusted CA store.
+ * {@link CertificateSource} based on the user-installed trusted CA store.
  * @hide
  */
-public final class SystemCertificateSource extends DirectoryCertificateSource {
+public final class UserCertificateSource extends DirectoryCertificateSource {
     private static class NoPreloadHolder {
-        private static final SystemCertificateSource INSTANCE = new SystemCertificateSource();
+        private static final UserCertificateSource INSTANCE = new UserCertificateSource();
     }
 
-    private final File mUserRemovedCaDir;
-
-    private SystemCertificateSource() {
-        super(new File(System.getenv("ANDROID_ROOT") + "/etc/security/cacerts"));
-        File configDir = resolveConfigDir();
-        mUserRemovedCaDir = new File(configDir, "cacerts-removed");
+    private UserCertificateSource() {
+        super(new File(getConfigDir(), "cacerts-added"));
     }
 
-    private File resolveConfigDir() {
+    private static File getConfigDir() {
         if (SDK_INT >= 21) {
             return Environment.getUserConfigDirectory(UserHandle.myUserId());
         } else {
@@ -48,12 +44,12 @@ public final class SystemCertificateSource extends DirectoryCertificateSource {
         }
     }
 
-    public static SystemCertificateSource getInstance() {
+    public static UserCertificateSource getInstance() {
         return NoPreloadHolder.INSTANCE;
     }
 
     @Override
     protected boolean isCertMarkedAsRemoved(String caFile) {
-        return new File(mUserRemovedCaDir, caFile).exists();
+        return false;
     }
 }

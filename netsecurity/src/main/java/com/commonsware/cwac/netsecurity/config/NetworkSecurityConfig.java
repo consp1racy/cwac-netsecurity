@@ -185,13 +185,13 @@ public final class NetworkSecurityConfig {
                         new CertificatesEntryRef(SystemCertificateSource.getInstance(), false));
         // Applications targeting N and above must opt in into trusting the user added certificate
         // store.
-/*
+
         if (targetSdkVersion <= Build.VERSION_CODES.M) {
             // User certificate store, does not bypass static pins.
             builder.addCertificatesEntryRef(
                     new CertificatesEntryRef(UserCertificateSource.getInstance(), false));
         }
-*/
+
         return builder;
     }
 

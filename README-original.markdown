@@ -110,17 +110,6 @@ If you have them in the XML, they will be ignored.
 OkHttp3 should support the full range of network security configuration
 XML features.
 
-The `<certificates src="user" />` cannot really be supported prior to Android 7.0,
-insofar as the system will check user certificates any time it checks for
-system certificates. If you include such an element in a configuration:
-
-- If you are using `withManifestConfig()`, a warning will be logged to LogCat,
-and the element will be treated as if it were `<certificates src="system" />`
-
-- If you are using anything else (e.g., `withConfig()`), your app will crash
-at startup, with an error indicating that `<certificates src="user" />` is not
-supported
-
 ## Advanced Usage
 
 If you want to employ certificate memorization or otherwise

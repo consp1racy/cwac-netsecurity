@@ -208,8 +208,6 @@ public class TrustManagerBuilder {
    */
   public TrustManagerBuilder withConfig(Context ctxt,
                                         int resourceId) {
-    validateConfig(ctxt, resourceId, false);
-
     return(withConfig(new XmlConfigSource(ctxt, resourceId, false)));
   }
 
@@ -226,8 +224,6 @@ public class TrustManagerBuilder {
   public TrustManagerBuilder withConfig(Context ctxt,
                                         int resourceId,
                                         boolean isDebugBuild) {
-    validateConfig(ctxt, resourceId, false);
-
     return(withConfig(new XmlConfigSource(ctxt, resourceId,
       isDebugBuild)));
   }
@@ -259,9 +255,6 @@ public class TrustManagerBuilder {
 
         if (resourceId==-1) {
           throw new RuntimeException("Could not find android.security.net.config meta-data!");
-        }
-        else {
-          validateConfig(ctxt, resourceId, true);
         }
       }
 
@@ -315,46 +308,5 @@ public class TrustManagerBuilder {
     }
 
     return(appConfig.isCleartextTrafficPermitted(hostname));
-  }
-
-  private void validateConfig(Context ctxt, int resourceId,
-                              boolean isUserAllowed) {
-    XmlResourceParser xpp=ctxt.getResources().getXml(resourceId);
-    RuntimeException result=null;
-
-    try {
-      while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
-        if (xpp.getEventType()==XmlPullParser.START_TAG) {
-          if ("certificates".equals(xpp.getName())) {
-            for (int i=0; i<xpp.getAttributeCount(); i++) {
-              String name=xpp.getAttributeName(i);
-
-              if ("src".equals(name)) {
-                String src=xpp.getAttributeValue(i);
-
-                if ("user".equals(src)) {
-                  if (isUserAllowed) {
-                    Log.w("CWAC-NetSecurity", "requested <certificates src=\"user\">, treating as <certificates src=\"system\">");
-                  }
-                  else {
-                    result=new RuntimeException(
-                      "requested <certificates src=\"user\">, not supported");
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        xpp.next();
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException("Could not parse config XML", e);
-    }
-
-    if (result!=null) {
-      throw result;
-    }
   }
 }

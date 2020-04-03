@@ -115,8 +115,8 @@ public class TrustedCertificateStore {
     }
 
     private final File systemDir;
-    private final File addedDir;
-    private final File deletedDir;
+//    private final File addedDir;
+//    private final File deletedDir;
 
     public TrustedCertificateStore() {
         this(defaultCaCertsSystemDir, defaultCaCertsAddedDir, defaultCaCertsDeletedDir);
@@ -124,8 +124,8 @@ public class TrustedCertificateStore {
 
     public TrustedCertificateStore(File systemDir, File addedDir, File deletedDir) {
         this.systemDir = systemDir;
-        this.addedDir = addedDir;
-        this.deletedDir = deletedDir;
+//        this.addedDir = addedDir;
+//        this.deletedDir = deletedDir;
     }
 
 /*
@@ -159,8 +159,8 @@ public class TrustedCertificateStore {
         File file;
         if (isSystem(alias)) {
             file = new File(systemDir, alias.substring(PREFIX_SYSTEM.length()));
-        } else if (isUser(alias)) {
-            file = new File(addedDir, alias.substring(PREFIX_USER.length()));
+//        } else if (isUser(alias)) {
+//            file = new File(addedDir, alias.substring(PREFIX_USER.length()));
         } else {
             return null;
         }
@@ -687,7 +687,7 @@ public class TrustedCertificateStore {
         // non-existant user cert, nothing to delete
     }
 */
-
+/*
     private void removeUnnecessaryTombstones(String alias) throws IOException {
         if (!isUser(alias)) {
             throw new AssertionError(alias);
@@ -714,4 +714,5 @@ public class TrustedCertificateStore {
             lastTombstoneIndex--;
         }
     }
+*/
 }
