@@ -43,8 +43,6 @@ public class PinListEntry {
 
     private final Set<String> pinnedFingerprints = new HashSet<String>();
 
-    private final TrustedCertificateStore certStore;
-
     public String getCommonName() {
         return cn;
     }
@@ -53,11 +51,10 @@ public class PinListEntry {
         return enforcing;
     }
 
-    public PinListEntry(String entry, TrustedCertificateStore store) throws PinEntryException {
+    public PinListEntry(String entry) throws PinEntryException {
         if (entry == null) {
             throw new NullPointerException("entry == null");
         }
-        certStore = store;
         // Examples:
         // *.google.com=true|34c8a0d...9e04ca05f,9e04ca05f...34c8a0d
         // *.android.com=true|ca05f...8a0d34c
@@ -139,16 +136,6 @@ public class PinListEntry {
     }
 
     private boolean chainContainsUserCert(List<X509Certificate> chain) {
-        if (certStore == null) {
-            return false;
-        }
-/*
-        for (X509Certificate cert : chain) {
-            if (certStore.isUserAddedCertificate(cert)) {
-                return true;
-            }
-        }
-*/
         return false;
     }
 

@@ -141,6 +141,9 @@ public final class TrustManagerImpl extends X509ExtendedTrustManager {
     public TrustManagerImpl(KeyStore keyStore, CertPinManager manager,
                             TrustedCertificateStore certStore,
                             /*CertBlacklist*/ Object blacklist) {
+        // EP: certStore is never null in this library. Saves us from re-implementing TCS.
+        if (certStore == null) throw new IllegalArgumentException("certStore == null");
+
         CertPathValidator validatorLocal = null;
         CertificateFactory factoryLocal = null;
         KeyStore rootKeyStoreLocal = null;
@@ -155,8 +158,7 @@ public final class TrustManagerImpl extends X509ExtendedTrustManager {
             // if we have an AndroidCAStore, we will lazily load CAs
             if ("AndroidCAStore".equals(keyStore.getType())) {
                 rootKeyStoreLocal = keyStore;
-                trustedCertificateStoreLocal =
-                    (certStore != null) ? certStore : new TrustedCertificateStore();
+                trustedCertificateStoreLocal = certStore;
                 acceptedIssuersLocal = null;
                 trustedCertificateIndexLocal = new TrustedCertificateIndex();
             } else {
@@ -175,7 +177,7 @@ public final class TrustManagerImpl extends X509ExtendedTrustManager {
             this.pinManager = manager;
         } else {
             try {
-                pinManager = new CertPinManager(trustedCertificateStoreLocal);
+                pinManager = new CertPinManager();
             } catch (PinManagerException e) {
                 throw new SecurityException("Could not initialize CertPinManager", e);
             }
